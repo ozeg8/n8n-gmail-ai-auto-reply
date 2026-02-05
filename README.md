@@ -4,7 +4,8 @@ This workflow automatically classifies incoming Gmail messages, applies the corr
 
 It is designed to reduce response time, keep inboxes organized, and provide a professional first response to incoming emails.
 
-![Workflow Overview](Screenshot 2026-02-06 at 00-01-06 ▶️ My workflow - n8n DEV.png)
+[![Workflow Overview](https://raw.githubusercontent.com/ozeg8/n8n-gmail-ai-auto-reply/main/Screenshot%202026-02-06%20at%2000-01-06%20▶️%20My%20workflow%20-%20n8n%20DEV.png)](https://github.com/ozeg8/n8n-gmail-ai-auto-reply/blob/main/Screenshot%202026-02-06%20at%2000-01-06%20▶️%20My%20workflow%20-%20n8n%20DEV.png)
+
 
 ---
 
