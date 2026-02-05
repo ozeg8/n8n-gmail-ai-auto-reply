@@ -1,0 +1,743 @@
+{
+  "name": "AI Powered Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "c768ad20-5ae2-4afa-b8aa-cf075d930162",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.From }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "senderName",
+              "description": "Extract the sender's name from the email. If the name is not available, return an empty string.",
+              "required": true
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        -16
+      ],
+      "id": "71710d25-c9bd-4d01-9506-e3be5f08f6c3",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        192
+      ],
+      "id": "addf4154-ca1a-43ed-af0b-ffd56941737d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "openAiApi",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1a93102c-fdcc-492d-a9c0-2efae8e709af",
+              "leftValue": "={{ $json.output.senderName }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        128,
+        -16
+      ],
+      "id": "53266ac5-df4e-4819-8591-c9c1a7e34ac6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4de735b8-8a80-4a6a-b793-8687461e87b2",
+              "name": "Introduction",
+              "value": "=Hi {{ $json.output.senderName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        -144
+      ],
+      "id": "91e857a4-67e1-412e-8c7d-56d2ac4845b6",
+      "name": "isim varsa"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "314096bc-485a-41ed-84a5-4a83eaaf3c19",
+              "name": "Introduction",
+              "value": "Hi",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        128
+      ],
+      "id": "5b312d17-8ebb-4e36-8a91-fbd1e3990619",
+      "name": "isim yoksa"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        752,
+        0
+      ],
+      "id": "d99fc08d-398e-4c65-8f36-2b4c3de19b47",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c27a2d8c-6666-4c1b-8ede-bdcc2292d113",
+              "name": "Introduction",
+              "value": "={{ $json.Introduction }}",
+              "type": "string"
+            },
+            {
+              "id": "7200e8d3-3f19-4a28-985a-a9f4cf1c5852",
+              "name": "emailBody",
+              "value": "={{ $('Gmail Trigger').item.json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "6b40716b-5f65-4c33-8cfb-abad638e9c7d",
+              "name": "messageId",
+              "value": "={{ $('Gmail Trigger').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6f5ecbc9-3a2d-4fb1-8188-be770de5f3d1",
+              "name": "threadId",
+              "value": "={{ $('Gmail Trigger').item.json.threadId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        0
+      ],
+      "id": "b22e7c2c-782d-457f-99cc-853c29139e36",
+      "name": "Toplu Çalışmak İçin notlar"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        224
+      ],
+      "id": "e06fca4a-76c6-4e7b-babc-b369dc2de291",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "openAiApi",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "labelIds": [
+          "[YOUR_PAYMENTS_LABEL_ID]"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        -144
+      ],
+      "id": "dabcbbc3-3278-451f-85bf-8918f7b2bd09",
+      "name": "Add label to message",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "labelIds": [
+          "[YOUR_CONSULTATION_LABEL_ID]"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        32
+      ],
+      "id": "c82a8ff8-e8c7-47a3-82d4-e834f0d8fd74",
+      "name": "Add label to message1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "labelIds": [
+          "[YOUR_COURSE_REQUEST_LABEL_ID]"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        -320
+      ],
+      "id": "a4cbb9d2-5b31-4791-9baa-0852060d8203",
+      "name": "Add label to message2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "labelIds": [
+          "[YOUR_MISC_LABEL_ID]"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        208
+      ],
+      "id": "9d27af6c-0fbe-4bf9-9514-4bce14583f6f",
+      "name": "Add label to message4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Please classify the text below into one of these categories:\n1. Course Request (Questions about courses, pricing)\n2. Consultation Request (Meeting requests)\n3. Payments (Payment questions)\n4. Miscellaneous (Others)\n\nOutput ONLY a raw JSON object like this:\n{ \"Course Request\": false, \"Consultation Request\": false, \"Payments\": true, \"Miscellaneous\": false }\n\nIMPORTANT: Do NOT use Markdown or code blocks (like ```json). Just the raw JSON.\n\nEmail Content: {{ $json.emailBody }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "52b08368-f564-4af2-985d-7ad2f5014c82",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "\"Payments\": true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "dcd6a994-015e-424e-bcd0-6234c29ee0c1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5c114556-6b3b-4190-9f78-78ac72473cbc",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "\"Course Request\": true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "99f73223-0a71-4868-a515-46e46d9ea5e6",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "\"Consultation Request\": true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "12d82190-5d4d-453e-95bc-0d1f150c88ef",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "\"Miscellaneous\": true",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1552,
+        0
+      ],
+      "id": "b3ec2793-11bd-4873-93ca-b59ef6bb224f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "emailType": "text",
+        "message": "={{ $('Toplu Çalışmak İçin notlar').item.json.Introduction }} \n\nThank you for your message regarding the payment.\nWe have received your request and will get back to you shortly with the necessary details.\n\nBest regards.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        -320
+      ],
+      "id": "474dc024-8b97-4496-892e-8dd11f40a4a9",
+      "name": "Reply to a message",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "emailType": "text",
+        "message": "={{ $('Toplu Çalışmak İçin notlar').item.json.Introduction }} \n\nThank you for your interest in our courses.\nWe will review your request and get back to you shortly with more details.\n\nBest regards.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        -144
+      ],
+      "id": "d0f61615-b51d-4a05-b824-ede51e48771b",
+      "name": "Reply to a message1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "emailType": "text",
+        "message": "={{ $('Toplu Çalışmak İçin notlar').item.json.Introduction }} \n\nThank you for reaching out for a consultation.\nWe will contact you shortly to discuss the next steps.\n\nBest regards.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        32
+      ],
+      "id": "2809741b-b758-4cd9-abee-3e2f1fba72be",
+      "name": "Reply to a message2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Toplu Çalışmak İçin notlar').item.json.messageId }}",
+        "emailType": "text",
+        "message": "={{ $('Toplu Çalışmak İçin notlar').item.json.Introduction }} \n\nThank you for contacting us.\nWe have received your message and will get back to you as soon as possible.\n\nBest regards.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        208
+      ],
+      "id": "ac924a66-27f6-4601-ac34-0d1f4ab8ab21",
+      "name": "Reply to a message3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmailOAuth2",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "isim varsa",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "isim yoksa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "isim yoksa": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "isim varsa": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Toplu Çalışmak İçin notlar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Toplu Çalışmak İçin notlar": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message2": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message1": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message4": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}
