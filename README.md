@@ -1,4 +1,6 @@
 # 🤖 AI-Powered Gmail Auto Label & Smart Reply (n8n)
+> AI-powered Gmail automation workflow built with n8n for smart labeling and automated replies.
+
 
 This workflow automatically classifies incoming Gmail messages, applies the correct labels, and sends a context-aware auto-reply using AI.
 
