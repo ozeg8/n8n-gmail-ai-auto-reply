@@ -2,6 +2,7 @@
 > AI-powered Gmail automation workflow built with n8n for smart labeling and automated replies.
 
 
+
 This workflow automatically classifies incoming Gmail messages, applies the correct labels, and sends a context-aware auto-reply using AI.
 
 It is designed to reduce response time, keep inboxes organized, and provide a professional first response to incoming emails.
