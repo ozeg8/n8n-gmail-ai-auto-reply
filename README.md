@@ -1,6 +1,9 @@
 [![n8n](https://img.shields.io/badge/n8n-workflow-orange)](https://n8n.io/)
+
 [![AI](https://img.shields.io/badge/AI-powered-blue)](https://openai.com/)
+
 [![Gmail](https://img.shields.io/badge/Gmail-Automation-red)](https://developers.google.com/gmail)
+
 [![Website](https://img.shields.io/badge/Website-kobify.co-black)](https://kobify.co/)
 
 
